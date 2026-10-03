@@ -1,0 +1,27 @@
+// Describes the cloud machine your Codespace boots: Ubuntu with Docker, Node 22, kubectl and
+// minikube already installed. GitHub reads this when you create the Codespace - you never run it.
+{
+  "name": "microservices-workshop",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "latest"
+    }
+  },
+  // minikube is installed but not started - students start it in Session 3. Only the gateway publishes a port.
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "gateway (the only public door)" }
+  },
+  // Docker-in-Docker can leave the legacy iptables FORWARD policy at DROP, which silently blocks traffic between containers on user-defined networks. -n so it can never wait for a password.
+  "postStartCommand": "sudo -n iptables-legacy -P FORWARD ACCEPT >/dev/null 2>&1 || true",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-kubernetes-tools.vscode-kubernetes-tools"]
+    }
+  }
+}
